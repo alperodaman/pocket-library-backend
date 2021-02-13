@@ -1,4 +1,6 @@
 import { User, registerValidation } from "../../model/user/index.js";
+import { genereateCode } from "../../utils/generateCode.js";
+import { verificationSendEmail } from "../../utils/sendmailer.js";
 
 const register = async (req, res) => {
   const { error } = registerValidation(req.body);
@@ -8,11 +10,14 @@ const register = async (req, res) => {
   }
   const userExist = await User.findOne({ email });
   if (userExist) {
-    return res.status(400).send("Burda bişiler oluyor");
+    return res.status(400).send({ error: "Email Already exist!" });
   }
-  const user = new User(req.body);
+
   try {
+    const emailCode = genereateCode();
+    const user = new User({ ...req.body, emailCode });
     await user.save();
+    await verificationSendEmail(user.email, emailCode);
     const token = await user.generateAuthToken();
     res.status(201).json({ token });
   } catch (e) {

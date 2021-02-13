@@ -1,47 +1,16 @@
 import mongoose from "mongoose";
-import { UserType } from "../utils.js";
+import { BoolType, StringType, UserType } from "../utils.js";
 
 const bookSchema = new mongoose.Schema(
   {
-    title: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    author: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    translator: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    publisher: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    description: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    completed: {
-      type: Boolean,
-      default: false,
-    },
-    category: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    ISBN: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+    title: StringType,
+    author: StringType,
+    translator: StringType,
+    publisher: StringType,
+    description: StringType,
+    completed: BoolType,
+    category: StringType,
+    ISBN: StringType,
     owner: UserType,
   },
   {

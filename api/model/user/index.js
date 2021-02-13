@@ -1,4 +1,5 @@
 import User from "./userModel.js";
+import BadToken from "./badTokenModel.js";
 import {
   loginValidation,
   registerValidation,
@@ -7,9 +8,10 @@ import {
 } from "./userValidation.js";
 
 export {
-    User,
-    loginValidation,
-    registerValidation,
-    sendMailCodeValidation,
-    changePasswordValidation,
+  User,
+  BadToken,
+  loginValidation,
+  registerValidation,
+  sendMailCodeValidation,
+  changePasswordValidation,
 };

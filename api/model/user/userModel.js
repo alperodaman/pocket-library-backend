@@ -2,27 +2,17 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Book from "../book/bookModel.js";
-import { BookType } from "../utils.js";
+import BadToken from "./badTokenModel.js";
+import { BookType, BoolType, StringType } from "../utils.js";
 
 const userSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+    name: StringType,
     email: {
-      type: String,
+      ...StringType,
       unique: true,
-      required: true,
-      trim: true,
-      lowercase: true,
     },
-    password: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+    password: StringType,
     birthDate: {
       type: Date,
     },
@@ -34,10 +24,7 @@ const userSchema = new mongoose.Schema(
     emailCode: {
       type: String,
     },
-    isVerified: {
-      type: Boolean,
-      required: false,
-    },
+    isVerified: BoolType,
   },
   {
     timestamps: true,
@@ -50,6 +37,8 @@ userSchema.methods.toJSON = function () {
   const user = this;
   const userObject = user.toObject();
   delete userObject.password;
+  delete userObject.token;
+  delete userObject.emailCode;
   return userObject;
 };
 
@@ -64,6 +53,16 @@ userSchema.methods.generateAuthToken = async function () {
   return token;
 };
 
+userSchema.methods.logout = async function () {
+  const token = this.token;
+  if (token === "null") return;
+  else {
+    await BadToken.create({ token });
+    this.token = "null";
+    await this.save();
+  }
+};
+
 userSchema.statics.findByCredentials = async (email, password) => {
   const user = await User.findOne({ email });
   if (!user) {
@@ -71,6 +70,9 @@ userSchema.statics.findByCredentials = async (email, password) => {
   }
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
+    throw new Error("Unable to login!");
+  }
+  if (user.isVerified === false) {
     throw new Error("Unable to login!");
   }
   return user;

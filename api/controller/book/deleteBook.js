@@ -1,5 +1,5 @@
-import { Book, addBookValidation } from "../../model/book/index.js";
-const updateBook = async (req, res) => {
+import { Book } from "../../model/book/index.js";
+const deleteBook = async (req, res) => {
   const _id = req.params.id;
   try {
     const book = await Book.findOneAndDelete({ _id, owner: req.user._id });
@@ -12,4 +12,4 @@ const updateBook = async (req, res) => {
   }
 };
 
-export default updateBook;
+export default deleteBook;
