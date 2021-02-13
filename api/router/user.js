@@ -3,6 +3,7 @@ import auth from "../middleware/auth.js";
 import {
   register,
   isVerified,
+  sendCodeAgain,
   login,
   logout,
   getProfile,
@@ -12,6 +13,7 @@ import {
 const router = express.Router();
 router.post("/register", register);
 router.post("/verified", isVerified);
+router.post("/sendCode", sendCodeAgain);
 router.post("/login", login);
 router.post("/logout", auth, logout);
 router.get("/me", auth, getProfile);
